@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CTG Marketplace</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: #111;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 20px auto;
+    }
+
+    h2 {
+      margin-top: 30px;
+    }
+
+    form {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 30px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+    }
+
+    button {
+      background: #111;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .product {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    .product h3 {
+      margin: 0;
+    }
+
+    .price {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CTG Marketplace</h1>
+  <p>Buy & Sell Products Easily</p>
+</header>
+
+<div class="container">
+
+  <h2>Publish a Product</h2>
+  <form id="productForm">
+    <input type="text" id="name" placeholder="Product Name" required>
+    <textarea id="description" placeholder="Product Description" required></textarea>
+    <input type="number" id="price" placeholder="Price (€)" required>
+    <button type="submit">Publish Product</button>
+  </form>
+
+  <h2>Marketplace</h2>
+  <div class="products" id="productList"></div>
+
+</div>
+
+<script>
+  const form = document.getElementById("productForm");
+  const productList = document.getElementById("productList");
+
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+
+  function renderProducts() {
+    productList.innerHTML = "";
+
+    products.forEach((product, index) => {
+      const div = document.createElement("div");
+      div.className = "product";
+
+      div.innerHTML = `
+        <h3>${product.name}</h3>
+        <p>${product.description}</p>
+        <p class="price">€${product.price}</p>
+        <button onclick="buyProduct(${index})">Buy</button>
+      `;
+
+      productList.appendChild(div);
+    });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const newProduct = {
+      name: document.getElementById("name").value,
+      description: document.getElementById("description").value,
+      price: document.getElementById("price").value
+    };
+
+    products.push(newProduct);
+    localStorage.setItem("products", JSON.stringify(products));
+
+    form.reset();
+    renderProducts();
+  });
+
+  function buyProduct(index) {
+    alert("Purchase successful! (Demo checkout)");
+  }
+
+  renderProducts();
+</script>
+
+</body>
+</html># This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
